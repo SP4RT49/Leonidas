@@ -1,0 +1,41 @@
+const Discord = require('discord.js');
+const client = new Discord.Client();
+
+const { token, prefix } = require('./config.json');
+
+//Toutes les actions à faire quand le bot se connecte
+client.on(`ready`, function () {
+    console.log(`Leonidas vient de se Connecter (${client.user.tag})`);
+})
+
+client.on('message', (message) => {
+
+    if (!message.content.startsWith(prefix) || message.author.bot) return;
+
+    const args = message.content.slice(prefix.length).split(/ +/);
+    const commands = args.shift().toLowerCase();
+
+    if (commands ===  `ping`) {
+        message.channel.send('pong.');
+    }
+    else if (commands === `test`) {
+        message.reply(`Quoi ?`);
+    }
+
+    else if (commands === `server`) {
+        message.channel.send(`Nom du serveur : ${message.guild}\nNombre d'utilisateurs : ${message.guild.memberCount}`);
+    }
+    else if (commands === `avatar`) {
+        if (!message.mentions.users.size) {
+            return message.channel.send(`Votre avatar est : ${message.author.displayAvatarURL({format: `png`})}`)
+        }
+
+        const avatarList = message.mentions.users.map(user => {
+            return `L'avatar de ${user.username} est : ${user.displayAvatarURL({format: `png`})}`;
+        });
+
+        message.channel.send(avatarList);
+    }
+});
+
+client.login(token);
